@@ -1,9 +1,18 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Check localStorage for existing login state
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const stored = localStorage.getItem('isAuthenticated');
+    return stored === 'true' ? true : false;
+  });
+
+  // Persist login state in localStorage
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated);
+  }, [isAuthenticated]);
 
   // Call this function after successful login
   const login = () => setIsAuthenticated(true);
