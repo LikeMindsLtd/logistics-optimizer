@@ -15,15 +15,17 @@ const Plants = lazy(() => import('./pages/Plants'));
 const Optimization = lazy(() => import('./pages/Optimization'));
 const Report = lazy(() => import('./pages/Report'));
 const DataManagement = lazy(() => import('./pages/DataManagement'));
+const Logout = lazy(() => import('./components/Logout'));
+const NotFound = lazy(() => import('./pages/404'));
 
 const App = () => {
   const { isAuthenticated } = useContext(AuthContext);
 
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="text-center mt-20">Loading...</div>}>
         <Routes>
-          {/* Public Route */}
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
 
           {/* Root redirect */}
@@ -34,7 +36,7 @@ const App = () => {
             }
           />
 
-          {/* Protected layout with sidebar */}
+          {/* Protected layout */}
           <Route
             element={
               <ProtectedRoute>
@@ -49,10 +51,11 @@ const App = () => {
             <Route path="/vessels" element={<Vessels />} />
             <Route path="/optimization" element={<Optimization />} />
             <Route path="/data-management" element={<DataManagement />} />
+            <Route path="/logout" element={<Logout />} />
           </Route>
 
-          {/* Catch-all */}
-          <Route path="*" element={<div>404 Not Found</div>} />
+          {/* Catch-all 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </Router>
