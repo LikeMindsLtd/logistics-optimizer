@@ -1,10 +1,8 @@
-# server/_init_.py
-
 from flask import Flask
 from .models import db 
 
 def create_app():
-    app = Flask(_name_)
+    app = Flask(__name__)
     
     # Configure the Database URI 
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://appuser:strongpassword@localhost/logistics_db"
