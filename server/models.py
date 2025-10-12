@@ -8,7 +8,7 @@ db = SQLAlchemy()
 # ----------------- SQLALCHEMY MODELS (DB TABLES) -----------------
 
 class PlantLog(db.Model):
-    _tablename_ = "plant_log"
+    __tablename__ = "plant_log"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, index=True, nullable=False)
     plant_id = db.Column(db.String(50), index=True, nullable=False)
@@ -30,7 +30,7 @@ class PlantLog(db.Model):
     steel_exported_tonnes = db.Column(db.Float)
 
 class TrainLog(db.Model):
-    _tablename_ = "train_log"
+    __tablename__ = "train_log"
     id = db.Column(db.Integer, primary_key=True)
     # Using DateTime for precise time-based metrics
     departure_time = db.Column(db.DateTime, index=True, nullable=False)
@@ -54,7 +54,7 @@ class TrainLog(db.Model):
     total_trip_cost_inr = db.Column(db.Float)
 
 class PortTariff(db.Model):
-    _tablename_ = "port_tariffs"
+    __tablename__ = "port_tariffs"
     id = db.Column(db.Integer, primary_key=True)
     port_name = db.Column(db.String(50), index=True, nullable=False)
     material = db.Column(db.String(50), index=True, nullable=False)
@@ -63,7 +63,7 @@ class PortTariff(db.Model):
     max_throughput_t_day = db.Column(db.Float)
 
 class VesselCost(db.Model):
-    _tablename_ = "vessel_costs"
+    __tablename__ = "vessel_costs"
     id = db.Column(db.Integer, primary_key=True)
     vessel_id = db.Column(db.String(100), index=True, nullable=False)
     load_port = db.Column(db.String(50))
@@ -75,7 +75,7 @@ class VesselCost(db.Model):
     laydays_allowed_hours = db.Column(db.Float)
 
 class PortLog(db.Model):
-    _tablename_ = "port_log"
+    __tablename__ = "port_log"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, index=True, nullable=False)
     port_name = db.Column(db.String(50), index=True, nullable=False)
@@ -93,7 +93,7 @@ class PortLog(db.Model):
     steel_eod_storage_tonnes = db.Column(db.Float)
 
 class VesselDelayHistory(db.Model):
-    _tablename_ = "vessel_delay_history"
+    __tablename__ = "vessel_delay_history"
     id = db.Column(db.Integer, primary_key=True)
     vessel_name = db.Column(db.String(100), index=True, nullable=False)
     port_name = db.Column(db.String(50))

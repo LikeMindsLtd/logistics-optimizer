@@ -1,0 +1,9 @@
+# requirements.txt
+Flask
+SQLAlchemy
+Flask-SQLAlchemy
+pydantic
+pandas
+openpyxl
+psycopg2-binary
+xlsxwriter
