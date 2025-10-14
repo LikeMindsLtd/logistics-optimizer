@@ -1,7 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
 
-
-
 const Sidebar = () => {
   const navItems = [
     { name: "Dashboard", path: "/dashboard" },
@@ -14,35 +12,30 @@ const Sidebar = () => {
   ];
 
   return (
-    <nav
-      style={{
-        width: "220px",
-        backgroundColor: "#2c3e50",
-        color: "#ecf0f1",
-        padding: "20px",
-        height: "100vh",
-        position: "relative",
-      }}
-    >
-      <h2 className="text-3xl font-bold mb-4">Logistics Optimizer</h2>
-      <ul style={{ listStyle: "none", padding: 0 }}>
+    <nav className="w-56 bg-gray-800 text-gray-200 p-5 h-screen relative">
+      <h2 className="text-3xl font-bold mb-4 text-white">Logistics Optimizer</h2>
+      <ul className="list-none p-0">
         {navItems.map((item) => (
-          <li key={item.path} style={{ margin: "10px 0" }}>
+          <li key={item.path} className="my-2.5">
             <NavLink
               to={item.path}
-              style={({ isActive }) => ({
-                color: isActive ? "#3498db" : "#ecf0f1",
-                textDecoration: "none",
-                fontWeight: isActive ? "bold" : "normal",
-              })}
+              className={({ isActive }) =>
+                `no-underline ${
+                  isActive
+                    ? "text-blue-400 font-bold"
+                    : "text-gray-200 hover:text-blue-200"
+                }`
+              }
             >
               {item.name}
             </NavLink>
           </li>
         ))}
       </ul>
-      <div style={{position: 'absolute', bottom: '20px'}}>
-        <Link to="/logout" className="" style={{color:'red', textDecoration: 'none'}}>Logout</Link>
+      <div className="absolute bottom-5">
+        <Link to="/logout" className="no-underline text-red-500">
+          Logout
+        </Link>
       </div>
     </nav>
   );
