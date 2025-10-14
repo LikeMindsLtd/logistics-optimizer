@@ -53,11 +53,11 @@ def generate_port_tariffs_data(output_path):
             max_throughput = round(random.uniform(t_low, t_high), -2)
             
             tariff_data.append({
-                'Port_Name': port,
-                'Material': material,
-                'Handling_Cost_(₹/tonne)': handling_cost,
-                'Storage_Cost_(₹/tonne/day)': storage_cost,
-                'Max_Throughput_T/Day': max_throughput,
+                'port_name': port,
+                'material': material,
+                'handling_cost_inr_tonne': handling_cost,
+                'storage_cost_inr_tonne_day': storage_cost,
+                'max_throughput_t_day': max_throughput,
             })
 
     df = pd.DataFrame(tariff_data)
@@ -77,5 +77,5 @@ def generate_port_tariffs_data(output_path):
         print(f"ERROR: Failed to save Excel. Details: {e}")
         sys.exit(1)
         
-# if __name__ == "__main__":                             ***Commented to prevent accidental run***
+# if __name__ == "__main__":                             #***Commented to prevent accidental run***
 #     generate_port_tariffs_data(DEFAULT_OUTPUT_LOG)
