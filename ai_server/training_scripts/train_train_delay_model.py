@@ -1,43 +1,39 @@
-#Ai model for predicting port delay
-#import necessary packages
 import tensorflow as tf    
 import numpy as np
 import pandas as pd
 import random
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler,LabelEncoder
-import matplotlib.pyplot as pt
-from pathlib import Path
-import psycopg2 as py
 import requests
+import os
 
 random.seed(42)
 #Request to database 
-response = requests.get("http://<server-ip>:5000/vessel_data")
+response = requests.get("http://localhost:5000/api/main/v1/data/trains")
 data_json=response.json()
 data=pd.DataFrame(data_json)
 
 #Converting string into numerical value
 Trip_ID_encode=LabelEncoder()
-data["Trip_ID"]=Trip_ID_encode.fit_transform(data["Trip_ID"])
+data["trip_id"]=Trip_ID_encode.fit_transform(data["trip_id"])
 Material_Flow_encode=LabelEncoder()
-data["Material_Flow"]=Material_Flow_encode.fit_transform(data["Material_Flow"])
+data["material_flow"]=Material_Flow_encode.fit_transform(data["material_flow"])
 Material_encode=LabelEncoder()
-data["Material"]=Material_encode.fit_transform(data["Material"])
+data["material"]=Material_encode.fit_transform(data["material"])
 Source_encode=LabelEncoder()
-data["Source"]=Source_encode.fit_transform(data["Source"])
+data["source"]=Source_encode.fit_transform(data["source"])
 Destination_encode=LabelEncoder()
-data["Destination"]=Destination_encode.fit_transform(data["Destination"])
+data["destination"]=Destination_encode.fit_transform(data["destination"])
 
 
 
 #Converting datatime into seconds as numerical value
-data["Departure_Time"]=pd.to_datetime(data["Departure_Time"]).astype(np.int64)//10**9
-data["Arrival_Time"]=pd.to_datetime(data["Arrival_Time"]).astype(np.int64)//10**9
+data["departure_time"]=pd.to_datetime(data["departure_time"]).astype(np.int64)//10**9
+data["arrival_time"]=pd.to_datetime(data["arrival_time"]).astype(np.int64)//10**9
 
 #extracting input and output 
-data_input=data.drop(["Delay_h","Total_Trip_Cost (₹)","Rake_Availability_Index","Base_Time_h","Loading_Time_h","Unloading_Time_h","Total_Time_h","Arrival_Time"],axis=1)
-data_output=data[["Delay_h","Total_Trip_Cost (₹)"]]
+data_input=data.drop(["delay_h","total_trip_cost_inr","rake_availability_index","base_time_h","loading_time_h","unloading_time_h","total_time_h","arrival_Time"],axis=1)
+data_output=data[["delay_h","total_trip_cost_inr"]]
 
 
 
@@ -62,8 +58,11 @@ ai_model_1.compile(loss="mse",optimizer=tf.keras.optimizers.Adam(learning_rate=0
 early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=50, restore_best_weights=True)
 
 #Train the data
-ai_model_1.fit(data_input,data_output,epochs=500,verbose=1,shuffle=0,callbacks=[early_stop])
+ai_model_1.fit(data_input,data_output,epochs=500,verbose=0,shuffle=0,callbacks=[early_stop])
 
-#Saving a mode
-#Change path where to save
-ai_model_1.save("train_ai_model.keras")
+model_dir = os.path.join("..", "ai_models")  # relative to model_generators/
+os.makedirs(model_dir, exist_ok=True)
+
+model_path = os.path.join(model_dir, "port_ai_model.keras")
+ai_model_1.save(model_path)
+print(f"Model saved at: {model_path}")

@@ -1,36 +1,32 @@
-#Ai model for predicting port delay
-#import necessary packages
 import tensorflow as tf    
 import numpy as np
 import pandas as pd
 import random
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler,LabelEncoder
-import matplotlib.pyplot as pt
-from pathlib import Path
-import psycopg2 as py
 import requests
+import os
 
 random.seed(42)
 #Request to database 
-response = requests.get("http://<server-ip>:5000/vessel_data")
+response = requests.get("http://localhost:5000/api/main/v1/data/delay_history")
 data_json=response.json()
 data=pd.DataFrame(data_json)
 
 #Converting string into numerical value
 Port_Name_encode=LabelEncoder()
-data["Port_Name"]=Port_Name_encode.fit_transform(data["Port_Name"])
+data["port_name"]=Port_Name_encode.fit_transform(data["port_name"])
 Vessel_Name_encode=LabelEncoder()
-data["Vessel_Name"]=Vessel_Name_encode.fit_transform(data["Vessel_Name"])
+data["vessel_name"]=Vessel_Name_encode.fit_transform(data["vessel_name"])
 
 #Converting datatime into seconds as numerical value
-data["ETA_Datetime"]=pd.to_datetime(data["ETA_Datetime"]).astype(np.int64)//10**9
-data["Laydays_Start"]=pd.to_datetime(data["Laydays_Start"]).astype(np.int64)//10**9
-data["Laydays_End"]=pd.to_datetime(data["Laydays_End"]).astype(np.int64)//10**9
+data["eta_datetime"]=pd.to_datetime(data["eta_datetime"]).astype(np.int64)//10**9
+data["laydays_start"]=pd.to_datetime(data["laydays_start"]).astype(np.int64)//10**9
+data["laydays_end"]=pd.to_datetime(data["laydays_end"]).astype(np.int64)//10**9
 
 #extracting input and output 
-data_input=data.drop(["Delay_Hours","Demurrage_Cost(₹)","Actual_Berth_Time","Past_Delay_Avg(hours)","Laydays_Limit(hours)"],axis=1)
-data_output=data[["Delay_Hours","Demurrage_Cost(₹)"]]
+data_input=data.drop(["delay_hours","demurrage_cost_inr","actual_berth_time","past_delay_avg_hours","laydays_limit_hours"],axis=1)
+data_output=data[["delay_hours","demurrage_cost_inr"]]
 
 
 
@@ -57,8 +53,12 @@ ai_model_1.compile(loss="mse",optimizer=tf.keras.optimizers.Adam(learning_rate=0
 early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=50, restore_best_weights=True)
 
 #Train the data
-ai_model_1.fit(data_input,data_output,epochs=500,verbose=1,shuffle=0,callbacks=[early_stop])
+ai_model_1.fit(data_input,data_output,epochs=500,verbose=0,shuffle=0,callbacks=[early_stop])
 
-#Saving a mode
-#Change path where to save
-ai_model_1.save("port_ai_model.keras")
+model_dir = os.path.join("..", "ai_models")  # relative to model_generators/
+os.makedirs(model_dir, exist_ok=True)
+
+model_path = os.path.join(model_dir, "train_ai_model.keras")
+ai_model_1.save(model_path)
+print(f"Model saved at: {model_path}")
+

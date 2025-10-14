@@ -12,3 +12,4 @@ numpy
 Scikit-learn
 requests
 pathlib
+flask-cors

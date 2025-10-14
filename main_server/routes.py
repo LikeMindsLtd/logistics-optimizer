@@ -3,10 +3,12 @@ from pydantic import ValidationError
 from .services import crud_service
 from .services import reporting_service
 from .services.crud_service import get_model_and_schema
-from .models import db, MODEL_MAP 
+import requests
+from .models import db, MODEL_MAP
 
 
-bp = Blueprint('api', __name__, url_prefix='/api/v1')
+
+bp = Blueprint('api', __name__, url_prefix='/api/main/v1')
 
 # --- Utility: Standardize response output ---
 
@@ -242,3 +244,41 @@ def get_vessels_docked_route():
     
     serialized_items = [serialize_item(item, Schema) for item in items]
     return jsonify({"data": serialized_items}), 200
+
+
+
+# ---------------- Proxy Route for AI Training ----------------
+
+AI_SERVER_URL = "http://127.0.0.1:6000/api/ai/v1"
+
+# Trigger training via main server
+@bp.route("/trigger-training", methods=["POST"])
+def trigger_training_proxy():
+    try:
+        resp = requests.post(f"{AI_SERVER_URL}/trigger-training", json={}, timeout=5)
+        try:
+            return jsonify(resp.json())
+        except ValueError:
+            return jsonify({
+                "message": "AI server returned invalid JSON",
+                "status_code": resp.status_code,
+                "response_text": resp.text
+            }), 502
+    except requests.RequestException as e:
+        return jsonify({"message": "Failed to reach AI server", "error": str(e)}), 500
+
+# Get training status via main server
+@bp.route("/training-status", methods=["GET"])
+def training_status_proxy():
+    try:
+        resp = requests.get(f"{AI_SERVER_URL}/training-status", timeout=5)
+        try:
+            return jsonify(resp.json())
+        except ValueError:
+            return jsonify({
+                "message": "AI server returned invalid JSON",
+                "status_code": resp.status_code,
+                "response_text": resp.text
+            }), 502
+    except requests.RequestException as e:
+        return jsonify({"message": "Failed to reach AI server", "error": str(e)}), 500
