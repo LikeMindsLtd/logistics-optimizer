@@ -19,7 +19,6 @@ if not os.path.exists(OUTPUT_DIR):
     
 DEFAULT_OUTPUT_LOG = os.path.join(OUTPUT_DIR, "vessel_cost.xlsx")
 
-# --- EXCHANGE RATE ---
 # Using a realistic conversion factor for USD to INR
 USD_TO_INR = 83.0
 
@@ -86,14 +85,14 @@ def generate_vessel_cost_data(output_path):
             laydays = random.choice(LAYDAYS)
             
             vessel_data.append({
-                'Vessel_ID': vessel_id,
-                'Load_Port': load_port,
-                'Discharge_Port': discharge_port,
-                'Material': material,
-                'Ocean_Freight_(₹/tonne)': freight_inr,
-                'Demurrage_Rate_(₹/hr)': demurrage_inr,
-                'Contract_Quantity(tonnes)': quantity,
-                'Laydays_Allowed(hours)': laydays,
+                'vessel_id': vessel_id,
+                'load_port': load_port,
+                'discharge_port': discharge_port,
+                'material': material,
+                'ocean_freight_inr_tonne': freight_inr,
+                'demurrage_rate_inr_hr': demurrage_inr,
+                'contract_quantity_tonnes': quantity,
+                'laydays_allowed_hours': laydays,
             })
 
     df = pd.DataFrame(vessel_data)
@@ -113,5 +112,5 @@ def generate_vessel_cost_data(output_path):
         print(f"ERROR: Failed to save Excel. Details: {e}")
         sys.exit(1)
         
-# if __name__ == "__main__":                                      ***Commented to prevent accidental run***
+# if __name__ == "__main__":                                      #***Commented to prevent accidental run***
 #     generate_vessel_cost_data(DEFAULT_OUTPUT_LOG)

@@ -157,24 +157,24 @@ def generate_plant_logs():
                                  (p['max_coal_stock'] + p['max_limestone_stock']))*100
 
             all_logs.append({
-                'Date': current_date.strftime('%Y-%m-%d'),
-                'Plant_ID': p['id'],
-                'Plant_Name': p['name'],
-                'Max_Operating_Capacity(in MTPA)': round(p['capacity_mtp'],2),
-                'Cumulative_Capacity_Utilization (%)': round(cumulative_utilization,2),
-                'Stock_Utilization (%)': round(stock_utilization,2),
-                'Min_Stock_Target(tonnes)': round(min_stock_target, 2),
-                'Coal_BOD_Stock(in tonnes)': round(coal_stock_bod, 2),
-                'Limestone_BOD_Stock(in tonnes)': round(limestone_stock_bod, 2),
-                'Coal_Required(in tonnes)': round(coal_required,2),
-                'Limestone_Required(in tonnes)': round(limestone_required,2),
-                'Consumed_Coal(in tonnes)': round(consumed_coal,2),
-                'Consumed_Limestone(in tonnes)': round(consumed_limestone,2),
-                'Coal_Arrived(in tonnes)': round(p['coal_arrivals'][day],2),
-                'Limestone_Arrived(in tonnes)': round(p['limestone_arrivals'][day],2),
-                'Coal_EOD_Stock(in tonnes)': round(p['coal_stock'],2),
-                'Limestone_EOD_Stock(in tonnes)': round(p['limestone_stock'],2),
-                'Steel_Exported(in tonnes)': round(steel_export,2)
+                'date': current_date.strftime('%Y-%m-%d'), 
+                'plant_id': p['id'],
+                'plant_name': p['name'],
+                'max_operating_capacity_mtpa': round(p['capacity_mtp'], 2),
+                'cumulative_capacity_utilization_percent': round(cumulative_utilization, 2),
+                'stock_utilization_percent': round(stock_utilization, 2),
+                'min_stock_target_tonnes': round(min_stock_target, 2),
+                'coal_bod_stock_tonnes': round(coal_stock_bod, 2),
+                'limestone_bod_stock_tonnes': round(limestone_stock_bod, 2),
+                'coal_required_tonnes': round(coal_required, 2),
+                'limestone_required_tonnes': round(limestone_required, 2),
+                'consumed_coal_tonnes': round(consumed_coal, 2),
+                'consumed_limestone_tonnes': round(consumed_limestone, 2),
+                'coal_arrived_tonnes': round(p['coal_arrivals'][day], 2),
+                'limestone_arrived_tonnes': round(p['limestone_arrivals'][day], 2),
+                'coal_eod_stock_tonnes': round(p['coal_stock'], 2),
+                'limestone_eod_stock_tonnes': round(p['limestone_stock'], 2),
+                'steel_exported_tonnes': round(steel_export, 2)
             })
 
     export_path = DEFAULT_OUTPUT_LOG
@@ -195,5 +195,5 @@ def generate_plant_logs():
         # Exiting if file write fails
         sys.exit(1)
 
-# if __name__ == "__main__":            ***Commented to prevent accidental run***
+# if __name__ == "__main__":            #***Commented to prevent accidental run***
 #     generate_plant_logs()
