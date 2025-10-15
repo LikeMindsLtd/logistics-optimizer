@@ -344,5 +344,5 @@ MODEL_MAP = {
     'tariffs': (PortTariff, PortTariffSchema, PortLogUpdateSchema),
     'vessel_costs': (VesselCost, VesselCostSchema, VesselCostUpdateSchema),
     'ports': (PortLog, PortLogSchema, PortLogUpdateSchema),
-    'delay_history': (VesselDelayHistory, VesselDelayHistorySchema, VesselDelayHistoryUpdateSchema),
+    'vessel_delay_history': (VesselDelayHistory, VesselDelayHistorySchema, VesselDelayHistoryUpdateSchema),
 }

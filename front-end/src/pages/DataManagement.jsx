@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react'; 
+import ExcelUploader from '../components/ExcelUploader';
+import AITrainingTrigger from '../components/AITrainingTrigger';
 
 export default function DataManagement() {
   const [lastSync, setLastSync] = useState(new Date().toLocaleString());
@@ -13,20 +15,16 @@ export default function DataManagement() {
   };
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-6">
       <h1 className="text-3xl font-bold">Data Management</h1>
-      <p className="text-gray-600">Manage data sources, synchronization, and access control.</p>
+      <p className="text-gray-600">Manage data sources, synchronization, and model training.</p>
 
-      <div className="mt-4 space-y-2">
-        <p>Last Sync: <strong>{lastSync}</strong></p>
-        <div className="space-x-2">
-          <button
-            onClick={() => handleSync('Excel')}
-            disabled={loading}
-            className={`px-4 py-2 rounded text-white ${loading ? 'bg-gray-400' : 'bg-yellow-600 hover:bg-yellow-700'}`}
-          >
-            Upload Excel Data
-          </button>
+      <AITrainingTrigger />
+      <div className="space-y-4 pt-4 border-t">
+        <h2 className="text-2xl font-semibold">Data Operations</h2>
+        <p>Last System Data Sync: <strong>{lastSync}</strong></p>
+        <div className="space-x-4 flex">
+          <ExcelUploader />
         </div>
       </div>
     </div>

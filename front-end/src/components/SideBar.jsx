@@ -12,7 +12,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <nav className="w-56 bg-gray-800 text-gray-200 p-5 h-screen relative">
+    <nav className="w-56 bg-gray-800 text-gray-200 p-5 h-screen fixed">
       <h2 className="text-3xl font-bold mb-4 text-white">Logistics Optimizer</h2>
       <ul className="list-none p-0">
         {navItems.map((item) => (
