@@ -13,3 +13,5 @@ Scikit-learn
 requests
 pathlib
 flask-cors
+ortools
+fastapi

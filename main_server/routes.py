@@ -5,10 +5,29 @@ from .services import reporting_service
 from .services.crud_service import get_model_and_schema
 import requests
 from .models import db, MODEL_MAP
+import pandas as pd
+from .models import (
+    PlantLogSchema,
+    PortLogSchema,
+    TrainLogSchema,
+    VesselCostSchema,
+    PortTariffSchema,
+    VesselDelayHistorySchema
+)
 
 
 
 bp = Blueprint('api', __name__, url_prefix='/api/main/v1')
+
+# Map table names to existing schemas
+TABLE_SCHEMAS = {
+    'plants': PlantLogSchema,
+    'ports': PortLogSchema,
+    'trains': TrainLogSchema,
+    'vessels': VesselCostSchema,
+    'port_tariffs': PortTariffSchema,
+    'vessel_delay_history': VesselDelayHistorySchema
+}
 
 # --- Utility: Standardize response output ---
 
@@ -282,3 +301,60 @@ def training_status_proxy():
             }), 502
     except requests.RequestException as e:
         return jsonify({"message": "Failed to reach AI server", "error": str(e)}), 500
+
+
+# ------------------- Excel Upload Endpoint -------------------
+
+@bp.route('/data/upload-excel', methods=['POST'])
+def upload_excel():
+    table = request.form.get('table')
+    file = request.files.get('file')
+
+    if not table or not file:
+        return jsonify({"error": "Table and file are required"}), 400
+
+    # Get the corresponding schema and model
+    Schema = TABLE_SCHEMAS.get(table)
+    if not Schema:
+        return jsonify({"error": f"No schema found for table '{table}'"}), 400
+
+    Model, _, _ = crud_service.get_model_and_schema(table)
+    if not Model:
+        return jsonify({"error": f"No model found for table '{table}'"}), 400
+
+    # Read Excel file
+    try:
+        df = pd.read_excel(file)
+    except Exception as e:
+        return jsonify({"error": f"Failed to read Excel: {str(e)}"}), 400
+
+    inserted_count = 0
+    failed_rows = []
+
+    for i, row in df.iterrows():
+        data = row.to_dict()
+
+        # Convert columns if needed
+        if 'rake_id' in data:
+            data['rake_id'] = str(data['rake_id'])
+
+        try:
+            # Pydantic validation
+            validated_data = Schema(**data).dict(exclude_unset=True)
+
+            # Insert into DB
+            obj, error = crud_service.insert_record(Model, validated_data)
+            if obj:
+                inserted_count += 1
+            else:
+                failed_rows.append({"row": i + 2, "error": error, "data": data})
+
+        except Exception as e:
+            failed_rows.append({"row": i + 2, "error": str(e), "data": data})
+
+    status_code = 201 if not failed_rows else 207  # 207 = partial success
+    return jsonify({
+        "message": f"Excel file uploaded for table '{table}'",
+        "rows_uploaded": inserted_count,
+        "rows_failed": failed_rows
+    }), status_code
